@@ -9,15 +9,14 @@
  */
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class MenuPanel extends JPanel {
     private HighScoreManager highScoreManager;
     private JButton playButton;
+    private JTextArea highScoreArea;
 
-    public MenuPanel(ActionListener playAction) {
+    public MenuPanel(GameApp gameApp) {
         highScoreManager = new HighScoreManager();
         setLayout(new BorderLayout());
 
@@ -27,19 +26,19 @@ public class MenuPanel extends JPanel {
         add(title, BorderLayout.NORTH);
 
         // High Score Table
-        JTextArea highScoreArea = new JTextArea();
+        highScoreArea = new JTextArea();
         highScoreArea.setEditable(false);
-        displayHighScores(highScoreArea);
+        displayHighScores();
         add(new JScrollPane(highScoreArea), BorderLayout.CENTER);
 
         // Play Button
         playButton = new JButton("Play");
         playButton.setFont(new Font("Arial", Font.BOLD, 24));
-        playButton.addActionListener(playAction);
-        add(playButton, BorderLayout.SOUTH);
+        playButton.addActionListener(e -> gameApp.showGamePanel()); // Call GameApp's method to start the game
+        add(playButton, BorderLayout.SOUTH);       
     }
 
-    private void displayHighScores(JTextArea highScoreArea) {
+    public void displayHighScores() {
         List<HighScoreManager.HighScore> scores = highScoreManager.getHighScores();
         StringBuilder sb = new StringBuilder("High Scores:\n");
         int rank = 1;
@@ -49,4 +48,13 @@ public class MenuPanel extends JPanel {
         }
         highScoreArea.setText(sb.toString());
     }
+    
+    public void refreshLeaderboard() {
+        displayHighScores(); // Reload the leaderboard content
+    }
+    
+    public HighScoreManager getHighScoreManager() {
+        return highScoreManager;
+    }
+
 }

@@ -18,14 +18,14 @@ public class HighScoreManager {
     public HighScoreManager() {
         highScores = new ArrayList<>();
         loadHighScores();
-    }
+    }       
 
     // Add a new high score
     public void addHighScore(String playerName, int score) {
         highScores.add(new HighScore(playerName, score));
         highScores.sort(Comparator.comparingInt(HighScore::getScore).reversed());
         if (highScores.size() > MAX_SCORES) {
-            highScores = highScores.subList(0, MAX_SCORES); // Keep only top 10 scores
+            highScores = new ArrayList<>(highScores.subList(0, MAX_SCORES)); // Create a new ArrayList
         }
         saveHighScores();
     }
@@ -65,7 +65,7 @@ public class HighScoreManager {
     }
 
     // Inner class to represent a high score entry
-    private static class HighScore implements Serializable {
+    public static class HighScore implements Serializable {
         private static final long serialVersionUID = 1L;
         private final String playerName;
         private final int score;

@@ -13,21 +13,21 @@ import java.awt.event.*;
 import java.util.List;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
+    private GameApp gameApp;
     private Timer timer;
     private Player player;
     private Level currentLevel;
     private int currentLevelIndex;
     private boolean gameOver;
-    private HighScoreManager highScoreManager;
     private float time;
 
-    public GamePanel() {
+    public GamePanel(GameApp gameApp) {
+        this.gameApp = gameApp;
         setFocusable(true);
         setBackground(Color.GREEN); // Example background color
         addKeyListener(this);
 
         timer = new Timer(16, this); // Approx 60 FPS
-        highScoreManager = new HighScoreManager();
 
         currentLevelIndex = 1;
         loadLevel(currentLevelIndex, 3, 0);
@@ -48,20 +48,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (gameOver) {
-            g.setColor(Color.RED);
-            g.setFont(new Font("Arial", Font.BOLD, 36));
-            g.drawString("Game Over!", getWidth() / 2 - 100, getHeight() / 2);
-        } else {
+        if (!gameOver) {
             currentLevel.draw(g);
 
             // Timer display
             g.setColor(Color.BLACK);
-            g.drawString("Time: " + (int)(time/1000) + "s", 10, 20);
+            g.drawString("Time: " + (int)(time/1000) + "s", 20, 20);
 
             // Lives and score display
-            g.drawString("Lives: " + player.getLives(), 10, 40);
-            g.drawString("Score: " + player.getScore(), 10, 60);
+            g.drawString("Lives: " + player.getLives(), 20, 40);
+            g.drawString("Score: " + player.getScore(), 20, 60);
         }
     }
 
@@ -91,6 +87,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     player.loseLife();
                     if (player.getLives() <= 0) {
                         gameOver = true;
+                        triggerGameOver();
                     } else {
                         // Reset player position
                         //loadLevel(currentLevelIndex, player.getLives(), player.getScore());
@@ -104,7 +101,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             // Check level completion
             if (currentLevel.areAllBasketsCollected()) {
                 currentLevelIndex++;
-                if (currentLevelIndex > 2) {
+                if (currentLevelIndex > 10) {
                     currentLevelIndex = 1; // Restart from the first level
                 }
                 loadLevel(currentLevelIndex, player.getLives(), player.getScore());
@@ -113,9 +110,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         repaint();
     }
-
+    
+    private void triggerGameOver() {
+        gameApp.showGameOverPanel(player.getScore()); // Pass the player's score
+       
+    }
+    
+    public void resetGame() {
+        currentLevelIndex = 1; // Reset to the first level
+        time = 0; // Reset timer
+        loadLevel(currentLevelIndex, 3, 0); // Reset player lives and score
+        gameOver = false; // Ensure the game is not marked as over
+        requestFocusInWindow(); // Ensure the panel regains focus for input
+    }
+    
     @Override
     public void keyPressed(KeyEvent e) {
+//        System.out.println("Key pressed: " + e.getKeyCode());
         int key = e.getKeyCode();
         int speed = 5;
 
@@ -133,15 +144,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
     }
-
+    
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // No action on key release for this game
+       
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // No action on key type for this game
+        
     }
+    
 }

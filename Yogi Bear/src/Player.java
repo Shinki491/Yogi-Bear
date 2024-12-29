@@ -22,11 +22,39 @@ public class Player extends LevelObject {
         this.score = score;
     }
 
-    @Override
     public void draw(Graphics g) {
-        g.setColor(Color.BLUE); // Example color for the player
-        g.fillRect(x, y, width, height);
+        int pixelSize = 4; // Size of each "pixel" to scale the drawing
+
+        // Updated bear grid: Rounded lower rows and centered light part
+        int[][] bearPixels = {
+            {0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0},
+            {0, 0, 2, 2, 1, 1, 1, 1, 2, 2, 0, 0},
+            {0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0},
+            {2, 1, 1, 3, 3, 1, 1, 3, 3, 1, 1, 2},
+            {2, 1, 1, 3, 3, 1, 1, 3, 3, 1, 1, 2},
+            {2, 1, 1, 1, 1, 4, 4, 1, 1, 1, 1, 2},
+            {0, 2, 1, 1, 4, 4, 4, 4, 1, 1, 2, 0},
+            {0, 2, 1, 1, 4, 4, 4, 4, 1, 1, 2, 0},
+            {0, 0, 2, 1, 1, 1, 1, 1, 1, 2, 0, 0},
+            {0, 0, 0, 2, 1, 1, 1, 1, 2, 0, 0, 0},
+            {0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0}
+        };
+
+        // Loop through the grid and draw each pixel
+        for (int row = 0; row < bearPixels.length; row++) {
+            for (int col = 0; col < bearPixels[row].length; col++) {
+                switch (bearPixels[row][col]) {
+                    case 1: g.setColor(new Color(139, 69, 19)); break; // Brown for the bear's face
+                    case 2: g.setColor(Color.BLACK); break;            // Black for the outline
+                    case 3: g.setColor(Color.BLACK); break;           // Yellow for the ears
+                    case 4: g.setColor(new Color(245, 222, 179)); break; // Cream for the face center
+                    default: continue; // Skip transparent pixels
+                }
+                g.fillRect(x + col * pixelSize, y + row * pixelSize, pixelSize, pixelSize);
+            }
+        }
     }
+
 
     public void move(int dx, int dy, List<Obstacle> obstacles) {
         int newX = x + dx;

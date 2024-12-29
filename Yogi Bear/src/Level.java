@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Level {
     private Player player;
@@ -58,7 +59,9 @@ public class Level {
                             picnicBaskets.add(new PicnicBasket(posX, posY, cellSize, cellSize));
                             break;
                         case 'R': // Ranger
-                            rangers.add(new Ranger(posX, posY, cellSize, cellSize, 2, true)); // Default horizontal ranger
+                            Random random = new Random();
+                            boolean horizontal = random.nextBoolean();
+                            rangers.add(new Ranger(posX, posY, cellSize, cellSize, 2, horizontal)); // Default horizontal ranger
                             break;
                         // Add more symbols as needed
                     }
