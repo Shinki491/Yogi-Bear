@@ -1,2 +1,2 @@
 # Yogi Bear
- Programming Technology Sem3 Ass3
+A basic replica of the Yogi Bear game
